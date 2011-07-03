@@ -1,19 +1,28 @@
-/**
- *  SVGPan library 1.2
- * ====================
+/** 
+ *  SVGPan library 1.2.1
+ * ======================
  *
- * Given an unique existing element with id "viewport", including the
- * the library into any SVG adds the following capabilities:
+ * Given an unique existing element with id "viewport" (or when missing, the first g 
+ * element), including the the library into any SVG adds the following capabilities:
  *
  *  - Mouse panning
  *  - Mouse zooming (using the wheel)
- *  - Object dargging
+ *  - Object dragging
+ *
+ * You can configure the behaviour of the pan/zoom/drag with the variables
+ * listed in the CONFIGURATION section of this file.
  *
  * Known issues:
  *
  *  - Zooming (while panning) on Safari has still some issues
  *
  * Releases:
+ *
+ * 1.2.1, Mon Jul  4 00:33:18 CEST 2011, Andrea Leofreddi
+ *	- Fixed a regression with mouse wheel (now working on Firefox 5)
+ *	- Working with viewBox attribute (#4)
+ *	- Added "use strict;" and fixed resulting warnings (#5)
+ *	- Added configuration variables, dragging is disabled by default (#3)
  *
  * 1.2, Sat Mar 20 08:42:50 GMT 2010, Zeng Xiaohui
  *	Fixed a bug with browser mouse handler interaction
@@ -53,9 +62,21 @@
  * or implied, of Andrea Leofreddi.
  */
 
+"use strict";
+
+/// CONFIGURATION 
+/// ====>
+
+var enablePan = 1; // 1 or 0: enable or disable panning (default enabled)
+var enableZoom = 1; // 1 or 0: enable or disable zooming (default enabled)
+var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
+
+/// <====
+/// END OF CONFIGURATION 
+
 var root = document.documentElement;
 
-var state = 'none', stateTarget, stateOrigin, stateTf;
+var state = 'none', svgRoot, stateTarget, stateOrigin, stateTf;
 
 setupHandlers(root);
 
@@ -64,10 +85,9 @@ setupHandlers(root);
  */
 function setupHandlers(root){
 	setAttributes(root, {
-		"onmouseup" : "add(evt)",
+		"onmouseup" : "handleMouseUp(evt)",
 		"onmousedown" : "handleMouseDown(evt)",
 		"onmousemove" : "handleMouseMove(evt)",
-		"onmouseup" : "handleMouseUp(evt)",
 		//"onmouseout" : "handleMouseUp(evt)", // Decomment this to stop the pan functionality when dragging out of the SVG element
 	});
 
@@ -75,6 +95,31 @@ function setupHandlers(root){
 		window.addEventListener('mousewheel', handleMouseWheel, false); // Chrome/Safari
 	else
 		window.addEventListener('DOMMouseScroll', handleMouseWheel, false); // Others
+}
+
+/**
+ * Retrieves the root element for SVG manipulation. The element is then cached into the svgRoot global variable.
+ */
+function getRoot(root) {
+	if(typeof(svgRoot) == "undefined") {
+		var g = null;
+
+		g = root.getElementById("viewport");
+
+		if(g == null)
+			g = root.getElementsByTagName('g')[0];
+
+		if(g == null)
+			alert('Unable to obtain SVG root element');
+
+		setCTM(g, g.getCTM());
+
+		g.removeAttribute("viewBox");
+
+		svgRoot = g;
+	}
+
+	return svgRoot;
 }
 
 /**
@@ -111,14 +156,17 @@ function dumpMatrix(matrix) {
  * Sets attributes of an element.
  */
 function setAttributes(element, attributes){
-	for (i in attributes)
+	for (var i in attributes)
 		element.setAttributeNS(null, i, attributes[i]);
 }
 
 /**
- * Handle mouse move event.
+ * Handle mouse wheel event.
  */
 function handleMouseWheel(evt) {
+	if(!enableZoom)
+		return;
+
 	if(evt.preventDefault)
 		evt.preventDefault();
 
@@ -135,7 +183,7 @@ function handleMouseWheel(evt) {
 
 	var z = 1 + delta; // Zoom factor: 0.9/1.1
 
-	var g = svgDoc.getElementById("viewport");
+	var g = getRoot(svgDoc);
 	
 	var p = getEventPoint(evt);
 
@@ -145,6 +193,9 @@ function handleMouseWheel(evt) {
 	var k = root.createSVGMatrix().translate(p.x, p.y).scale(z).translate(-p.x, -p.y);
 
         setCTM(g, g.getCTM().multiply(k));
+
+	if(typeof(stateTf) == "undefined")
+		stateTf = g.getCTM().inverse();
 
 	stateTf = stateTf.multiply(k.inverse());
 }
@@ -160,15 +211,15 @@ function handleMouseMove(evt) {
 
 	var svgDoc = evt.target.ownerDocument;
 
-	var g = svgDoc.getElementById("viewport");
+	var g = getRoot(svgDoc);
 
-	if(state == 'pan') {
+	if(state == 'pan' && enablePan) {
 		// Pan mode
 		var p = getEventPoint(evt).matrixTransform(stateTf);
 
 		setCTM(g, stateTf.inverse().translate(p.x - stateOrigin.x, p.y - stateOrigin.y));
-	} else if(state == 'move') {
-		// Move mode
+	} else if(state == 'drag' && enableDrag) {
+		// Drag mode
 		var p = getEventPoint(evt).matrixTransform(g.getCTM().inverse());
 
 		setCTM(stateTarget, root.createSVGMatrix().translate(p.x - stateOrigin.x, p.y - stateOrigin.y).multiply(g.getCTM().inverse()).multiply(stateTarget.getCTM()));
@@ -188,9 +239,12 @@ function handleMouseDown(evt) {
 
 	var svgDoc = evt.target.ownerDocument;
 
-	var g = svgDoc.getElementById("viewport");
+	var g = getRoot(svgDoc);
 
-	if(evt.target.tagName == "svg") {
+	if(
+		evt.target.tagName == "svg" 
+		|| !enableDrag // Pan anyway when drag is disabled and the user clicked on an element 
+	) {
 		// Pan mode
 		state = 'pan';
 
@@ -198,8 +252,8 @@ function handleMouseDown(evt) {
 
 		stateOrigin = getEventPoint(evt).matrixTransform(stateTf);
 	} else {
-		// Move mode
-		state = 'move';
+		// Drag mode
+		state = 'drag';
 
 		stateTarget = evt.target;
 
@@ -220,7 +274,7 @@ function handleMouseUp(evt) {
 
 	var svgDoc = evt.target.ownerDocument;
 
-	if(state == 'pan' || state == 'move') {
+	if(state == 'pan' || state == 'drag') {
 		// Quit pan mode
 		state = '';
 	}
