@@ -20,6 +20,7 @@
  *
  * 1.2.2, xxxx, Andrea Leofreddi
  *	- Fixed viewBox on root tag (#7)
+ *	- Improved zoom speed (#2)
  *
  * 1.2.1, Mon Jul  4 00:33:18 CEST 2011, Andrea Leofreddi
  *	- Fixed a regression with mouse wheel (now working on Firefox 5)
@@ -73,6 +74,7 @@
 var enablePan = 1; // 1 or 0: enable or disable panning (default enabled)
 var enableZoom = 1; // 1 or 0: enable or disable zooming (default enabled)
 var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
+var zoomScale = 0.4; // Zoom sensitivity
 
 /// <====
 /// END OF CONFIGURATION 
@@ -108,7 +110,6 @@ function getRoot(root) {
 		var r = root.getElementById("viewport") ? root.getElementById("viewport") : root.documentElement, t = r;
 
 		while(t != root) {
-			//alert('doing stuff on ' + t.nodeName + ' who has parent ' + t.parentNode + '=' + root.nodeName);
 			if(t.getAttribute("viewBox")) {
 				setCTM(r, t.getCTM());
 
@@ -179,11 +180,11 @@ function handleMouseWheel(evt) {
 	var delta;
 
 	if(evt.wheelDelta)
-		delta = evt.wheelDelta / 3600; // Chrome/Safari
+		delta = evt.wheelDelta / 360; // Chrome/Safari
 	else
-		delta = evt.detail / -90; // Mozilla
+		delta = evt.detail / -9; // Mozilla
 
-	var z = 1 + delta; // Zoom factor: 0.9/1.1
+	var z = Math.pow(1 + zoomScale, delta);
 
 	var g = getRoot(svgDoc);
 	
