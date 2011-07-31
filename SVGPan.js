@@ -1,5 +1,5 @@
 /** 
- *  SVGPan library 1.2.1
+ *  SVGPan library 1.2.2
  * ======================
  *
  * Given an unique existing element with id "viewport" (or when missing, the first g 
@@ -17,6 +17,9 @@
  *  - Zooming (while panning) on Safari has still some issues
  *
  * Releases:
+ *
+ * 1.2.2, xxxx, Andrea Leofreddi
+ *	- Fixed viewBox on root tag (#7)
  *
  * 1.2.1, Mon Jul  4 00:33:18 CEST 2011, Andrea Leofreddi
  *	- Fixed a regression with mouse wheel (now working on Firefox 5)
@@ -76,7 +79,7 @@ var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
 
 var root = document.documentElement;
 
-var state = 'none', svgRoot, stateTarget, stateOrigin, stateTf;
+var state = 'none', svgRoot = null, stateTarget, stateOrigin, stateTf;
 
 setupHandlers(root);
 
@@ -101,22 +104,21 @@ function setupHandlers(root){
  * Retrieves the root element for SVG manipulation. The element is then cached into the svgRoot global variable.
  */
 function getRoot(root) {
-	if(typeof(svgRoot) == "undefined") {
-		var g = null;
+	if(svgRoot == null) {
+		var r = root.getElementById("viewport") ? root.getElementById("viewport") : root.documentElement, t = r;
 
-		g = root.getElementById("viewport");
+		while(t != root) {
+			//alert('doing stuff on ' + t.nodeName + ' who has parent ' + t.parentNode + '=' + root.nodeName);
+			if(t.getAttribute("viewBox")) {
+				setCTM(r, t.getCTM());
 
-		if(g == null)
-			g = root.getElementsByTagName('g')[0];
+				t.removeAttribute("viewBox");
+			}
 
-		if(g == null)
-			alert('Unable to obtain SVG root element');
+			t = t.parentNode;
+		}
 
-		setCTM(g, g.getCTM());
-
-		g.removeAttribute("viewBox");
-
-		svgRoot = g;
+		svgRoot = r;
 	}
 
 	return svgRoot;
