@@ -2,8 +2,9 @@
  *  SVGPan library 1.2.2
  * ======================
  *
- * Given an unique existing element with id "viewport" (or when missing, the first g 
- * element), including the the library into any SVG adds the following capabilities:
+ * Given an unique existing element with id "viewport" (or when missing, the 
+ * first g-element), including the the library into any SVG adds the following 
+ * capabilities:
  *
  *  - Mouse panning
  *  - Mouse zooming (using the wheel)
@@ -18,7 +19,7 @@
  *
  * Releases:
  *
- * 1.2.2, xxxx, Andrea Leofreddi
+ * 1.2.2, Tue Aug 30 17:21:56 CEST 2011, Andrea Leofreddi
  *	- Fixed viewBox on root tag (#7)
  *	- Improved zoom speed (#2)
  *
