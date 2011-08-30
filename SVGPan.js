@@ -75,7 +75,7 @@
 var enablePan = 1; // 1 or 0: enable or disable panning (default enabled)
 var enableZoom = 1; // 1 or 0: enable or disable zooming (default enabled)
 var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
-var zoomScale = 0.4; // Zoom sensitivity
+var zoomScale = 0.2; // Zoom sensitivity
 
 /// <====
 /// END OF CONFIGURATION 
