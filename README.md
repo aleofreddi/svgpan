@@ -13,13 +13,14 @@ The resulting javascript library is published here, in the hope that someone can
 
 ## How to use
 
-You can also open the demo in a new page and download the SVGPan library at http://www.cyberz.org/projects/SVGPan/tiger.svg .
+You can also open [the demo at vleo.net](http://www.cyberz.org/projects/SVGPan/tiger.svg).
 
 The library itself requires a root group to be identified by the id viewport, which confines the SVGPan library effects, and the import of the javascript code as well. For example, to adapt the tiger drawing, it was necessary to add the following:
 
+```html
 <script xlink:href="SVGPan.js"/>
 
 <g id="viewport" transform="translate(200,200)">...
-You may also try another SVG example (triple integral, from Wikipedia).
+```
 
 If you found this code useful please consider donating!
