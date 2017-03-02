@@ -18,7 +18,7 @@ You can also open [the demo at vleo.net](http://www.vleo.net/docs/projects/SVGPa
 The library itself requires a root group to be identified by the id viewport, which confines the svgpan library effects, and the import of the javascript code as well. For example, to adapt the tiger drawing, it was necessary to add the following:
 
 ```html
-<script xlink:href="SVGPan.js"/>
+<script xlink:href="svgpan.js"/>
 
 <g id="viewport" transform="translate(200,200)">...
 ```
