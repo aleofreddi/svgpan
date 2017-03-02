@@ -1,0 +1,25 @@
+{
+  "name": "svgpan",
+  "version": "1.2.2",
+  "description": "Tiny javascript library to add pan, zoom & drag capabilities to SVG",
+  "main": "svgpan.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleofreddi/svgpan.git"
+  },
+  "keywords": [
+    "svg",
+    "pan",
+    "zoom",
+    "drag"
+  ],
+  "author": "Andrea Leofreddi",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/aleofreddi/svgpan/issues"
+  },
+  "homepage": "https://github.com/aleofreddi/svgpan#readme",
+  "dependencies": {
+    "bower": "^1.8.0"
+  }
+}
