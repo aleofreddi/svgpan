@@ -13,7 +13,13 @@ The resulting javascript library is published here, in the hope that someone can
 
 ## How to use
 
-You can also open [the demo at vleo.net](http://www.vleo.net/docs/projects/SVGPan/tiger.svg).
+You can install svgpan by [bower](http://bower.io):
+
+```
+bower install svgpan
+```
+
+Alternatively you can download a copy of svgpan.js.
 
 The library itself requires a root group to be identified by the id viewport, which confines the svgpan library effects, and the import of the javascript code as well. For example, to adapt the tiger drawing, it was necessary to add the following:
 
@@ -23,4 +29,4 @@ The library itself requires a root group to be identified by the id viewport, wh
 <g id="viewport" transform="translate(200,200)">...
 ```
 
-If you found this code useful please consider donating!
+A demo is available [at vleo.net](http://www.vleo.net/docs/projects/SVGPan/tiger.svg).
