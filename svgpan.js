@@ -13,34 +13,9 @@
  * You can configure the behaviour of the pan/zoom/drag with the variables
  * listed in the CONFIGURATION section of this file.
  *
- * Known issues:
- *
- *  - Zooming (while panning) on Safari has still some issues
- *
- * Releases:
- *
- * 1.2.2, Tue Aug 30 17:21:56 CEST 2011, Andrea Leofreddi
- *	- Fixed viewBox on root tag (#7)
- *	- Improved zoom speed (#2)
- *
- * 1.2.1, Mon Jul  4 00:33:18 CEST 2011, Andrea Leofreddi
- *	- Fixed a regression with mouse wheel (now working on Firefox 5)
- *	- Working with viewBox attribute (#4)
- *	- Added "use strict;" and fixed resulting warnings (#5)
- *	- Added configuration variables, dragging is disabled by default (#3)
- *
- * 1.2, Sat Mar 20 08:42:50 GMT 2010, Zeng Xiaohui
- *	Fixed a bug with browser mouse handler interaction
- *
- * 1.1, Wed Feb  3 17:39:33 GMT 2010, Zeng Xiaohui
- *	Updated the zoom code to support the mouse wheel on Safari/Chrome
- *
- * 1.0, Andrea Leofreddi
- *	First release
- *
  * This code is licensed under the following BSD license:
  *
- * Copyright 2009-2017 Andrea Leofreddi <a.leofreddi@vleo.net>. All rights reserved.
+ * Copyright 2009-2019 Andrea Leofreddi <a.leofreddi@vleo.net>. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -83,7 +58,6 @@ var zoomScale = 0.2; // Zoom sensitivity
 /// END OF CONFIGURATION 
 
 var root = document.documentElement;
-
 var state = 'none', svgRoot = null, stateTarget, stateOrigin, stateTf;
 
 setupHandlers(root);
@@ -198,7 +172,7 @@ function handleMouseWheel(evt) {
 	// Compute new scale matrix in current mouse position
 	var k = root.createSVGMatrix().translate(p.x, p.y).scale(z).translate(-p.x, -p.y);
 
-        setCTM(g, g.getCTM().multiply(k));
+	setCTM(g, g.getCTM().multiply(k));
 
 	if(typeof(stateTf) == "undefined")
 		stateTf = g.getCTM().inverse();
