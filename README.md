@@ -1,32 +1,32 @@
 # svgpan
-Tiny Javascript to add pan ,zoom &amp; drag capabilities to SVG.
+Tiny Javascript to add pan, zoom &amp; drag capabilities to SVG.
 
-Some time ago the need for a browser-compatible vectorial language pushed me to consider the SVG markup language (I won’t say anything about Internet Explorer – it’s just unsupported there). The language itself is great, but, as a beginner, I was so disappointed about the fact that on the Internet I couldn’t find ANY library ready to use for panning and zooming features that I had to write one from scratch.
+Some time ago I had a need to display some vectorial drawings on the web so I've found out that SVG is decently supported by modern browsers (I won’t say anything about Internet Explorer – it’s just unsupported there). The language itself is great, but the interactivity provided by the browsers is definitely low: can display your SVG file on a browser and that's it - you can't navigate it, zoom it or pan :(
 
-The SVGPan library features:
+Since I couldn't find anything around, I've decided to write a minimalistic javascript library to provide such interactions, so SVGPan was born!
 
-Panning (pan à la Google maps) (click on the white background and pan)
-Zooming (using the mouse wheel)
-Element dragging (click on a drawing element and drag it somewhere else)
-Combinations of the above like zooming while dragging
-The resulting javascript library is published here, in the hope that someone can find it useful. The library itself is very small and easy to use; and it’s licensed under the BSD license. You can try a demo here
+Features:
 
-## How to use
+- Panning (pan à la Google maps) (click on the white background and pan)
+- Zooming (using the mouse wheel)
+- Element dragging (click on a drawing element and drag it somewhere else)
+- Combinations of the above like zooming while dragging
 
-You can install svgpan by [bower](http://bower.io):
+The library itself is very small and easy to use; and it’s licensed under the BSD license. You can try a [demo](http://www.vleo.net/docs/projects/SVGPan/tiger.svg).
+
+## Quickstart
+You can install svgpan via [bower](http://bower.io):
 
 ```
 bower install svgpan
 ```
 
-Alternatively you can download a copy of svgpan.js.
+Alternatively just download svgpan.js into your application.
 
-The library itself requires a root group to be identified by the id viewport, which confines the svgpan library effects, and the import of the javascript code as well. For example, to adapt the tiger drawing, it was necessary to add the following:
+The library requires a root group to be identified by the id `viewport`, which is where the svg/pan/zoom will be applied. Below an example:
 
 ```html
 <script xlink:href="svgpan.js"/>
 
 <g id="viewport" transform="translate(200,200)">...
 ```
-
-A demo is available [at vleo.net](http://www.vleo.net/docs/projects/SVGPan/tiger.svg).
